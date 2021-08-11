@@ -31,7 +31,7 @@ setup(
     author_email='spanigrahi@imm.cnrs.fr',
     license='MIT',
     url='https://github.com/pswap/deepnap',
-    description='segmentation of bacteria',
+    description='model API client',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     packages=find_packages(),
