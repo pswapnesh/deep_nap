@@ -24,8 +24,8 @@ def api_prediction(API_ENDPOINT,image,invert = False):
     except:
         print('error')
         print(json_response)
-        predictions = np.zeros_like(image)
-    return np.array(predictions)
+        predictions = np.zeros_like(image)[:,:,np.newaxis]
+    return np.array(predictions)[:,:,0]
 
 ## MagicGui widget for single image segmentation
 @magic_factory(auto_call=True)
