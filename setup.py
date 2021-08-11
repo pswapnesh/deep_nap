@@ -54,7 +54,7 @@ setup(
     ],
     entry_points={
         'napari.plugin': [
-            'deepnap = napari_model_plugin.deep_nap'
+            'deepnap =deep_nap.deep_nap'
         ],
     },
 )

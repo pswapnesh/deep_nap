@@ -26,4 +26,4 @@ https://napari.org/docs/plugins/index.html
 ## License
 
 Distributed under the terms of the [MIT] license,
-"misic-napari-plugin" is free and open source software
+"deepnap" is free and open source software
