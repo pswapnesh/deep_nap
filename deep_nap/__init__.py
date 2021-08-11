@@ -12,7 +12,7 @@ import requests
 import json
 
 API_ENDPOINT = "http://127.0.0.1:80/predict?data="
-threshold = 0.65
+threshold = 0.92
 # api_prediction
 def api_prediction(API_ENDPOINT,image,invert = False):
     data = json.dumps({"light_background": invert,"instances": image.tolist()})    
