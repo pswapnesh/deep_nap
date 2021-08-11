@@ -22,7 +22,7 @@ with open('requirements.txt') as f:
 
 
 # https://github.com/pypa/setuptools_scm
-use_scm = {"write_to": "misic_ui/_version.py"}
+use_scm = {"write_to": "deep_nap/_version.py"}
 
 setup(
     name='deepnap',
@@ -54,7 +54,7 @@ setup(
     ],
     entry_points={
         'napari.plugin': [
-            'deepnap =deep_nap.deep_nap'
+            'deepnap = deep_nap.deep_nap'
         ],
     },
 )
