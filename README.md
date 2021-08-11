@@ -1,4 +1,4 @@
-# misic-napari-plugin
+# deepnap
 
 [![License](https://img.shields.io/pypi/l/misic-napari-plugin.svg?color=green)](https://github.com/pswap/misic-napari-plugin/raw/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/misic-napari-plugin.svg?color=green)](https://pypi.org/project/misic-napari-plugin)
@@ -6,7 +6,7 @@
 [![tests](https://github.com/pswap/misic-napari-plugin/workflows/tests/badge.svg)](https://github.com/pswap/misic-napari-plugin/actions)
 [![codecov](https://codecov.io/gh/pswap/misic-napari-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/pswap/misic-napari-plugin)
 
-segmentation of bacteria
+napari plugin for docker based ML APIs
 
 ----------------------------------
 
@@ -22,9 +22,6 @@ https://napari.org/docs/plugins/index.html
 
 ## Installation
 
-You can install `misic-napari-plugin` via [pip]:
-
-    pip install misic-napari-plugin
 
 ## License
 
