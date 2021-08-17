@@ -11,8 +11,12 @@ import numpy as np
 import requests 
 import json
 
-API_ENDPOINT = "http://127.0.0.1:80/predict?data="
+url = 'http://127.0.0.1'
+port = "8000"
+
+API_ENDPOINT = url + ":" + port +"/predict?data="
 threshold = 0.92
+
 # api_prediction
 def api_prediction(API_ENDPOINT,image,invert = False):
     data = json.dumps({"light_background": invert,"instances": image.tolist()})    
@@ -27,16 +31,43 @@ def api_prediction(API_ENDPOINT,image,invert = False):
         predictions = np.zeros_like(image)[:,:,np.newaxis]
     return np.array(predictions)[:,:,0]
 
+
+# get model list
+model_list = requests.get(url + ':' + port + '/available_models')        
+model_list = json.loads(model_list.text)
+model_list = model_list['model_names']
+
+
+
+## Load selected model
+@magic_factory(call_button="Load",
+                model_name={"choices": model_list})
+def load_model():    
+    model_name = model_list[0]
+    data = json.dumps({"model_name": model_name})    
+    headers = {"content-type": "application/json"}
+    json_response = requests.post(url + ':' + port + '/load_model', data=data, headers=headers, timeout=1800) 
+    
+
+
 ## MagicGui widget for single image segmentation
-@magic_factory(auto_call=True)
-def segment(data: 'napari.types.ImageData', 
+@magic_factory(call_button="Segment",
+dropdown={"models": ['MiSiC', 'Anabaenna', 'Bdello']})
+def segment(data: 'napari.types.ImageData', threshold = 0.99
 ) -> 'napari.types.LabelsData':    
-    if len(data.shape) == 2:
-        
+    
+    if len(data.shape) == 2:        
         pred = api_prediction(API_ENDPOINT,data)
     else:
         pred = np.array([api_prediction(API_ENDPOINT,d) for d in data])
     return pred > threshold
+
+
+
+@napari_hook_implementation
+def napari_experimental_provide_dock_widget():
+    return load_model
+
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
