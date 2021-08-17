@@ -40,10 +40,8 @@ model_list = model_list['model_names']
 
 
 ## Load selected model
-@magic_factory(call_button="Load",
-                model_name={"choices": model_list})
-def load_model():    
-    model_name = model_list[0]
+@magic_factory(call_button="Load", model_name={"choices": model_list})
+def load_model(model_name = model_list[0]):        
     data = json.dumps({"model_name": model_name})    
     headers = {"content-type": "application/json"}
     json_response = requests.post(url + ':' + port + '/load_model', data=data, headers=headers, timeout=1800) 
@@ -66,10 +64,10 @@ def segment(data: 'napari.types.ImageData', threshold = 0.99
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
-    return load_model
+    return [load_model,segment]
 
 
-@napari_hook_implementation
-def napari_experimental_provide_dock_widget():
-    return segment
+# @napari_hook_implementation
+# def napari_experimental_provide_dock_widget():
+#     return segment
 
