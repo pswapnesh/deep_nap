@@ -75,9 +75,9 @@ def load_model(model_name = model_list[0]):
 @magic_factory(call_button="Segment",
 model_name={"choices": model_list})
 def segment(data: 'napari.types.ImageData',model_name = model_list[0], threshold = 0.99) -> 'napari.types.LabelsData':        
-    data = json.dumps({"model_name": model_name})    
+    selected_model = json.dumps({"model_name": model_name})    
     headers = {"content-type": "application/json"}
-    json_response = requests.post(url + ':' + port + '/load_model', data=data, headers=headers, timeout=1800) 
+    json_response = requests.post(url + ':' + port + '/load_model', data=selected_model, headers=headers, timeout=1800) 
 
     if len(data.shape) == 2:        
         pred = api_prediction(API_ENDPOINT,data)
