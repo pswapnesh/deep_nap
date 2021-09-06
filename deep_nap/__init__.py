@@ -7,9 +7,11 @@ except ImportError:
 import os
 from napari_plugin_engine import napari_hook_implementation
 from magicgui import magic_factory
+from magicgui.tqdm import trange
 import numpy as np
 import requests 
 import json
+
 
 '''
 Required endpoints:
@@ -77,7 +79,7 @@ def segment(data: 'napari.types.ImageData') -> 'napari.types.ImageData':
     if len(data.shape) == 2:        
         pred = api_prediction(API_ENDPOINT,data)
     else:
-        pred = np.array([api_prediction(API_ENDPOINT,d) for d in data])
+        pred = np.array([api_prediction(API_ENDPOINT,d) for d in trange(data)])
     return pred
 
 
