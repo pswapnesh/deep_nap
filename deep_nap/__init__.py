@@ -73,7 +73,7 @@ def load_model(model_name = model_list[0]):
 
 ## MagicGui widget for single image segmentation
 @magic_factory(call_button="Segment")
-def segment(data: 'napari.types.ImageData', threshold = 0.99) -> 'napari.types.ImageData':        
+def segment(data: 'napari.types.ImageData') -> 'napari.types.ImageData':        
     if len(data.shape) == 2:        
         pred = api_prediction(API_ENDPOINT,data)
     else:
@@ -82,9 +82,9 @@ def segment(data: 'napari.types.ImageData', threshold = 0.99) -> 'napari.types.I
 
 
 ## MagicGui widget for single image segmentation
-@magic_factory(auto_call=True,threshold = {"widget_type": "FloatSlider", "max": 1.0, "min": 0.0}) #, "tracking": False
-def post_process(data: 'napari.types.ImageData', threshold = threshold) -> 'napari.types.LabelsData':            
-    return data > threshold
+@magic_factory(auto_call=True,threshold = {"widget_type": "FloatSlider", "max": 1.0}) #, "tracking": False
+def post_process(data: 'napari.types.ImageData', threshold = 0.95) -> 'napari.types.LabelsData':            
+    return (data > threshold).astype(int)
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
