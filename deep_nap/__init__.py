@@ -11,10 +11,18 @@ import numpy as np
 import requests 
 import json
 
+# API parameters initialization
 url = 'http://127.0.0.1'
 port = "8000"
+predict_point = "/predict?data="
+meta_point = '/available_models'
+API_ENDPOINT = url + ":" + port + predict_point
 
-API_ENDPOINT = url + ":" + port +"/predict?data="
+# get model list
+model_list = requests.get(url + ':' + port + meta_point)        
+model_list = json.loads(model_list.text)
+model_list = model_list['model_names']
+
 threshold = 0.92
 
 # api_prediction
@@ -32,11 +40,15 @@ def api_prediction(API_ENDPOINT,image,invert = False):
     return np.array(predictions)[:,:,0]
 
 
-# get model list
-model_list = requests.get(url + ':' + port + '/available_models')        
-model_list = json.loads(model_list.text)
-model_list = model_list['model_names']
-
+## API params
+@magic_factory(call_button="auto")
+def load_model(api_endpoint = 'http://127.0.0.1', portnum = "8000"):        
+    url = api_endpoint
+    port = portnum    
+    # get model list
+    model_list = requests.get(url + ':' + port + meta_point)        
+    model_list = json.loads(model_list.text)
+    model_list = model_list['model_names']
 
 
 ## Load selected model
