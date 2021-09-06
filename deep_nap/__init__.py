@@ -73,10 +73,12 @@ def load_model(model_name = model_list[0]):
 
 ## MagicGui widget for single image segmentation
 @magic_factory(call_button="Segment",
-dropdown={"models": ['MiSiC', 'Anabaenna', 'Bdello']})
-def segment(data: 'napari.types.ImageData', threshold = 0.99
-) -> 'napari.types.LabelsData':    
-    
+model_name={"choices": model_list})
+def segment(data: 'napari.types.ImageData',model_name = model_list[0], threshold = 0.99) -> 'napari.types.LabelsData':        
+    data = json.dumps({"model_name": model_name})    
+    headers = {"content-type": "application/json"}
+    json_response = requests.post(url + ':' + port + '/load_model', data=data, headers=headers, timeout=1800) 
+
     if len(data.shape) == 2:        
         pred = api_prediction(API_ENDPOINT,data)
     else:
@@ -87,7 +89,7 @@ def segment(data: 'napari.types.ImageData', threshold = 0.99
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
-    return [api_endpoints,load_model,segment]
+    return [api_endpoints,segment]
 
 
 # @napari_hook_implementation
