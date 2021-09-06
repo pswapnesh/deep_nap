@@ -11,6 +11,17 @@ import numpy as np
 import requests 
 import json
 
+'''
+Required endpoints:
+"/predict?data=" for predictions
+'/available_models' for available models list
+'/load_model' to load specified model
+
+defaults:
+url = 'http://127.0.0.1'
+port = "8000"
+
+'''
 # API parameters initialization
 url = 'http://127.0.0.1'
 port = "8000"
@@ -42,7 +53,7 @@ def api_prediction(API_ENDPOINT,image,invert = False):
 
 ## API params
 @magic_factory(call_button="auto")
-def load_model(api_endpoint = 'http://127.0.0.1', portnum = "8000"):        
+def api_endpoints(api_endpoint = 'http://127.0.0.1', portnum = "8000"):        
     url = api_endpoint
     port = portnum    
     # get model list
@@ -76,7 +87,7 @@ def segment(data: 'napari.types.ImageData', threshold = 0.99
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
-    return [load_model,segment]
+    return [api_endpoints,load_model,segment]
 
 
 # @napari_hook_implementation
