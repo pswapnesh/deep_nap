@@ -52,7 +52,7 @@ def api_prediction(API_ENDPOINT,image,invert = False):
 
 
 ## API params
-@magic_factory(call_button="auto")
+@magic_factory(call_button="set")
 def api_endpoints(api_endpoint = 'http://127.0.0.1', portnum = "8000"):        
     url = api_endpoint
     port = portnum    
@@ -81,9 +81,14 @@ def segment(data: 'napari.types.ImageData', threshold = 0.99) -> 'napari.types.I
     return pred
 
 
+## MagicGui widget for single image segmentation
+@magic_factory(auto_call=True,threshold = {"widget_type": "Slider", "max": 1.0, "min": 0.0, "tracking": False})
+def post_process(data: 'napari.types.ImageData', threshold = threshold) -> 'napari.types.ImageData':            
+    return data > threshold
+
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
-    return [api_endpoints,load_model,segment]
+    return [api_endpoints,load_model,segment,post_process]
 
 
 # @napari_hook_implementation
