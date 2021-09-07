@@ -101,7 +101,7 @@ def load_model(model_name = model_list[0]):
 #     # d/=len(lines)
 #     # d = np.sqrt(d)
 
-@magic_factory(auto_call=True,scale = {"widget_type": "FloatSlider", "min":0.5,"max": 3.0, "tracking": False})
+@magic_factory(auto_call=True,scale = {"widget_type": "FloatSlider", "min":0.5,"max": 3.0})#, "tracking": False
 def quickcheck(data: 'napari.types.ImageData', size = 256,scale = 1):    
     sr,sc = data.shape[-2],data.shape[-1]
     if len(data.shape) > 2:
