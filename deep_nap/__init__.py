@@ -11,6 +11,7 @@ from magicgui.tqdm import trange
 from skimage.transform import rescale, resize
 from scipy.ndimage import label
 import numpy as np
+import napari
 import requests 
 import json
 
