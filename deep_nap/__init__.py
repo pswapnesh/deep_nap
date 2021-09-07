@@ -101,11 +101,44 @@ def load_model(model_name = model_list[0]):
 #     # d/=len(lines)
 #     # d = np.sqrt(d)
 
+@magic_factory(auto_call=True,scale = {"widget_type": "FloatSlider", "min":0.5,"max": 3.0, "tracking": False})
+def quickcheck(data: 'napari.types.ImageData', size = 256,scale = 1):    
+    sr,sc = data.shape[-2],data.shape[-1]
+    if len(data.shape) > 2:
+        image = data[0]   
+    else:
+        image = data 
+    if scale==1:
+        points = np.array([[int(sr/2), int(sc/2)]])
+        points_layer = napari.viewer.add_points(points, size=30,name = 'ROI')
+    
+    points = napari.viewer.layer('ROI').data
+    point = points[-1]
+    r1 = sr if point[1]+size > sr else point[1]+size
+    r0 = r1-size
+    c1 = sc if point[2]+size > sc else point[2]+size
+    c0 = c1 - size
+
+    im = image[r0:r1,c0:c1]
+    im = rescale(im,scale)
+
+    yp = api_prediction(API_ENDPOINT,im)
+    yp =resize(yp,(size,size))
+    result = np.zeros_like(image)
+    result[r0:r1,c0:c1] = result
+    return result
+
+    # lines = napari.viewer.layers['Shapes'].data
+    # d = 0
+    # for l in lines:
+    #     d += l[-1]**2+l[-2]**2
+    # d/=len(lines)
+    # d = np.sqrt(d)
 
 
 ## MagicGui widget for single image segmentation
 @magic_factory(call_button="Segment")
-def segment(data: 'napari.types.ImageData',scale = 1.0) -> 'napari.types.ImageData':
+def segment(data: 'napari.types.ImageData',scale = 1.0, progress = {"widget_type": "ProgressBar", "value": 0, "min": 0, "max": 100} ) -> 'napari.types.ImageData':
     scale = abs(scale)
     if scale > 2.5:
         scale = 2.5    
@@ -116,7 +149,11 @@ def segment(data: 'napari.types.ImageData',scale = 1.0) -> 'napari.types.ImageDa
     if len(data.shape) == 2:        
         image = rescaling(data,scale)
         pred = resizing(api_prediction(API_ENDPOINT,image))                    
-    else:       
+    else:      
+        # pred=[]
+        # for d in data:
+        #     pred.append(resizing(api_prediction(API_ENDPOINT,rescaling(d))))
+        #     progress+=1
         pred = np.array([resizing(api_prediction(API_ENDPOINT,rescaling(data[d]))) for d in trange(len(data))])    
     Segmentation = True
     return pred
@@ -131,11 +168,4 @@ def post_process(data: 'napari.types.ImageData', threshold = 240) -> 'napari.typ
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
-    return [load_model,segment,post_process,settings]
-
-
-# @napari_hook_implementation
-# def napari_experimental_provide_dock_widget():
-#     return segment
-
-
+    return [load_model,quickcheck,segment,post_process,settings]
