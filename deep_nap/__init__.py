@@ -112,7 +112,7 @@ def segment(data: 'napari.types.ImageData',scale = 1.0) -> 'napari.types.ImageDa
         image = rescaling(data,scale)
         pred = resizing(api_prediction(API_ENDPOINT,image))                    
     else:       
-        pred = np.array([resizing(api_prediction(API_ENDPOINT,rescaling(d))) for d in trange(data)])    
+        pred = np.array([resizing(api_prediction(API_ENDPOINT,rescaling(data[d]))) for d in trange(len(data))])    
     Segmentation = True
     return pred
 
