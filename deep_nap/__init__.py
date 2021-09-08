@@ -165,4 +165,4 @@ def post_process(data: 'napari.types.ImageData', threshold = 240) -> 'napari.typ
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
-    return [load_model,quickcheck,segment,post_process,settings]
+    return [load_model,segment,post_process,settings]
