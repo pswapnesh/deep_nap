@@ -159,9 +159,9 @@ def segment(data: 'napari.types.ImageData',scale = 1.0, progress = {"widget_type
 ## MagicGui widget for single image segmentation
 @magic_factory(auto_call=True,threshold = {"widget_type": "Slider", "max": 254}) #, "tracking": False
 def post_process(data: 'napari.types.ImageData', threshold = 240) -> 'napari.types.LabelsData':  
-    if Segmentation:           
-        labelled,count = label(data > threshold)
-        return labelled
+            
+    labelled,count = label(data > threshold)
+    return labelled
 
 @napari_hook_implementation
 def napari_experimental_provide_dock_widget():
