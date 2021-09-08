@@ -3,7 +3,6 @@ try:
 except ImportError:
     __version__ = "unknown"
 
-## import required functions
 import os
 from napari_plugin_engine import napari_hook_implementation
 from magicgui import magic_factory
@@ -25,8 +24,8 @@ Required endpoints:
 defaults:
 url = 'http://127.0.0.1'
 port = "8000"
-
 '''
+
 # API parameters initialization
 url = 'http://127.0.0.1'
 port = "8000"
@@ -59,11 +58,11 @@ def api_prediction(API_ENDPOINT,image,invert = False):
 
 ## API params
 @magic_factory(call_button="set")
-def settings(api_endpoint = 'http://127.0.0.1', portnum = "8000",predict_point1 = "/predict?data=",meta_point1 = '/available_models'):        
-    url = api_endpoint
-    port = portnum    
-    predict_point = predict_point1
-    meta_point = meta_point1
+def settings(host = 'http://127.0.0.1', port_number = "8000",prediction_api= "/predict?data=", model_list_api = '/available_models'):        
+    url = host
+    port = port_number    
+    predict_point = prediction_api
+    meta_point = model_list_api
     # get model list
     model_list = requests.get(url + ':' + port + meta_point)        
     model_list = json.loads(model_list.text)
@@ -102,39 +101,36 @@ def load_model(model_name = model_list[0]):
 #     # d/=len(lines)
 #     # d = np.sqrt(d)
 
-@magic_factory(auto_call=True,scale = {"widget_type": "FloatSlider", "min":0.5,"max": 3.0})#, "tracking": False
-def quickcheck(data: 'napari.types.ImageData', size = 256,scale = 1):    
-    sr,sc = data.shape[-2],data.shape[-1]
-    if len(data.shape) > 2:
-        image = data[0]   
-    else:
-        image = data 
-    if scale==1:
-        points = np.array([[int(sr/2), int(sc/2)]])
-        points_layer = napari.viewer.add_points(points, size=30,name = 'ROI')
-    
-    points = napari.viewer.layer('ROI').data
-    point = points[-1]
-    r1 = sr if point[1]+size > sr else point[1]+size
-    r0 = r1-size
-    c1 = sc if point[2]+size > sc else point[2]+size
-    c0 = c1 - size
+# @magic_factory(auto_call=True,scale = {"widget_type": "FloatSlider", "min":0.5,"max": 3.0})#, "tracking": False
+# def quickcheck(data: 'napari.types.ImageData', size = 256,scale = 1):    
+#     sr,sc = data.shape[-2],data.shape[-1]
+#     if len(data.shape) > 2:
+#         image = data[0]   
+#     else:
+#         image = data 
 
-    im = image[r0:r1,c0:c1]
-    im = rescale(im,scale)
+#     points = napari.Viewer.layers('ROI').data
+#     point = points[-1]
+#     r1 = sr if point[1]+size > sr else point[1]+size
+#     r0 = r1-size
+#     c1 = sc if point[2]+size > sc else point[2]+size
+#     c0 = c1 - size
 
-    yp = api_prediction(API_ENDPOINT,im)
-    yp =resize(yp,(size,size))
-    result = np.zeros_like(image)
-    result[r0:r1,c0:c1] = result
-    return result
+#     im = image[r0:r1,c0:c1]
+#     im = rescale(im,scale)
 
-    # lines = napari.viewer.layers['Shapes'].data
-    # d = 0
-    # for l in lines:
-    #     d += l[-1]**2+l[-2]**2
-    # d/=len(lines)
-    # d = np.sqrt(d)
+#     yp = api_prediction(API_ENDPOINT,im)
+#     yp =resize(yp,(size,size))
+#     result = np.zeros_like(image)
+#     result[r0:r1,c0:c1] = result
+#     return result
+
+#     # lines = napari.viewer.layers['Shapes'].data
+#     # d = 0
+#     # for l in lines:
+#     #     d += l[-1]**2+l[-2]**2
+#     # d/=len(lines)
+#     # d = np.sqrt(d)
 
 
 ## MagicGui widget for single image segmentation
@@ -148,7 +144,7 @@ def segment(data: 'napari.types.ImageData',scale = 1.0, progress = {"widget_type
     resizing = (lambda x: x ) if scale==1 else (lambda x: resize(x,[sr,sc]))
     
     if len(data.shape) == 2:        
-        image = rescaling(data,scale)
+        image = rescaling(data)
         pred = resizing(api_prediction(API_ENDPOINT,image))                    
     else:      
         # pred=[]
